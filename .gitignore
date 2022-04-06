@@ -1,3 +1,7 @@
+*.crt
+*.key
+!sso.key
+
 # Logs
 logs
 *.log
