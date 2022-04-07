@@ -5,6 +5,8 @@ const engine = require('ejs-mate');
 const session = require('express-session');
 const fs = require('fs');
 const https = require('https');
+// const favicon = require('serve-favicon');
+// const path = require('path');
 
 const SingleSignOnGuard = require('./sso/sso.guard');
 const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor');
@@ -35,6 +37,7 @@ function serve(options) {
 
 	app.use(express.urlencoded({ extended: true }));
 	app.use(express.json());
+	// app.use(favicon(path.join(options.dirname, 'public', 'favicon.ico')))
 
 	app.use(morgan('dev'));
 	app.engine('ejs', engine);
