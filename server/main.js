@@ -51,10 +51,10 @@ function serve(options) {
 	app.get('/reserved-area', SingleSignOnGuard, (req, res, next) => {
 		res.render('reserved-area', {
 			title: 'BHere SSO Consumer | Reserved Area',
-			ssoToken: req.session.ssoToken,
-			// ssoDecodedToken: req.session.ssoDecodedToken,
-			ssoDecodedToken: JSON.stringify(req.session.ssoDecodedToken),
-			user: req.session.ssoDecodedToken.user,
+			verifyToken: req.session.verifyToken,
+			// decodedToken: req.session.decodedToken,
+			decodedToken: JSON.stringify(req.session.decodedToken),
+			user: req.session.decodedToken.user,
 		});
 	});
 
