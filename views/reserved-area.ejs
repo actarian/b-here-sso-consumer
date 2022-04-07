@@ -1,7 +1,47 @@
 <% layout('_layout') -%>
+<style>
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.user {
+	display: flex;
+	flex-direction: column;
+	list-style: none;
+	min-width: 360px;
+	padding: 0;
+	margin: 20px 0;
+	text-align: left;
+}
+
+.user li {
+	display: flex;
+	align-items: flex-start;
+}
+
+.user li * {
+	display: block;
+	flex: 1;
+}
+
+.user li b {
+	flex: 0 0 100px;
+}
+
+</style>
 <div class="container">
 	<h1>Reserved Area</h1>
+	<ul class="user">
+		<% for (var key in user) { %>
+		<li><b><%= key %></b> <span><%= user[key] %></span></li>
+		<% } %>
+	</ul>
 	<p>
-		user: <%= user %>
+		ssoToken: <%= ssoToken %>
+	</p>
+	<p>
+		ssoDecodedToken: <%= ssoDecodedToken %>
 	</p>
 </div>

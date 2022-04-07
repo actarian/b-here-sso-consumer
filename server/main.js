@@ -6,8 +6,8 @@ const session = require('express-session');
 const fs = require('fs');
 const https = require('https');
 
-const SingleSignOnGuard = require('./sso.guard');
-const SingleSignOnTokenInterceptor = require('./sso-token.interceptor');
+const SingleSignOnGuard = require('./sso/sso.guard');
+const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor');
 
 function serve(options) {
 
@@ -27,7 +27,7 @@ function serve(options) {
 
 	app.use(
 		session({
-			secret: 'sso-consumer',
+			secret: 'bhere-sso-consumer',
 			resave: false,
 			saveUninitialized: true
 		})
@@ -44,14 +44,17 @@ function serve(options) {
 
 	app.get('/', (req, res, next) => {
 		res.render('index', {
-			title: 'SSO-Consumer | Index',
+			title: 'BHere SSO Consumer | Index',
 		});
 	});
 
 	app.get('/reserved-area', SingleSignOnGuard, (req, res, next) => {
 		res.render('reserved-area', {
-			title: 'SSO-Consumer | Reserved Area',
-			user: JSON.stringify(req.session.user),
+			title: 'BHere SSO Consumer | Reserved Area',
+			ssoToken: req.session.ssoToken,
+			// ssoDecodedToken: req.session.ssoDecodedToken,
+			ssoDecodedToken: JSON.stringify(req.session.ssoDecodedToken),
+			user: req.session.ssoDecodedToken.user,
 		});
 	});
 

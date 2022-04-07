@@ -1,8 +1,6 @@
 const axios = require('axios');
-const { verifyToken } = require('../token.service');
-const config = require('./config/config');
-const ssoOrigin = 'http://localhost:3010';
-// const ssoOrigin = 'https://localhost:9443';
+const { decodeToken } = require('./sso-token.service');
+const config = require('./sso.config');
 const { URL } = require('url');
 
 async function SingleSignOnTokenInterceptor(req, res, next) {
@@ -15,18 +13,19 @@ async function SingleSignOnTokenInterceptor(req, res, next) {
 		const redirectURL = requestUrl.pathname;
 		console.log('redirectURL');
 		try {
-			const ssoVerifyUrl = `${ssoOrigin}/sso/verifytoken?ssoToken=${ssoToken}`;
+			const ssoVerifyUrl = config.sso.verifyTokenUrl.replace('{verifytoken}', ssoToken);
 			const response = await axios.get(ssoVerifyUrl, {
 				headers: {
-					Authorization: `Bearer ${config.token}`
+					Authorization: `Bearer ${config.sso.bearer}`
 				}
 			});
 			const { token } = response.data;
-			const decoded = await verifyToken(token);
-			// now that we have the decoded jwt, use the,
-			// global-session-id as the session id so that
+			const ssoDecodedToken = await decodeToken(token);
+			// now that we have the decoded jwt,
+			// use the token sessionId as the global session id so that
 			// the logout can be implemented with the global session.
-			req.session.user = decoded;
+			req.session.ssoToken = ssoToken;
+			req.session.ssoDecodedToken = ssoDecodedToken;
 		} catch (err) {
 			return next(err);
 		}
