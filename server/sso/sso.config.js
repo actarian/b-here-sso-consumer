@@ -11,6 +11,7 @@ const SSO_SECRED = process.env.SSO_SECRET || 'l1Q7zkOL59cRqWBkQ12ZiGVW2DBL';
 const SSO_PUBLIC_KEY = process.env.SSO_PUBLIC_KEY || readFileSync('./sso.key');
 
 const origin = 'http://localhost:3010';
+// const origin = 'https://b-here-sso.herokuapp.com';
 
 const config = {
 	sso: {
