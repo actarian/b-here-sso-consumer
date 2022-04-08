@@ -10,6 +10,7 @@ const https = require('https');
 
 const SingleSignOnGuard = require('./sso/sso.guard');
 const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor');
+const config = require('./sso/sso.config');
 
 function serve(options) {
 
@@ -46,8 +47,18 @@ function serve(options) {
 	app.use(SingleSignOnTokenInterceptor);
 
 	app.get('/', (req, res, next) => {
+		const redirectUrl = `${req.protocol}://${req.headers.host}/token`;
+		const ssoUrl = config.sso.loginUrl.replace('{redirectUrl}', redirectUrl);
 		res.render('index', {
 			title: 'BHere SSO Consumer | Index',
+			login: ssoUrl,
+		});
+	});
+
+	app.get('/token', SingleSignOnGuard, (req, res, next) => {
+		res.render('token', {
+			title: 'BHere SSO Consumer | Token',
+			status: req.session.decodedToken != null ? 'success' : 'failure',
 		});
 	});
 

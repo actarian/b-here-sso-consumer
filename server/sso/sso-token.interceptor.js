@@ -26,8 +26,18 @@ async function SingleSignOnTokenInterceptor(req, res, next) {
 			// the logout can be implemented with the global session.
 			req.session.verifyToken = verifyToken;
 			req.session.decodedToken = decodedToken;
-		} catch (err) {
-			return next(err);
+		} catch (error) {
+			if (error.response) {
+				// The client was given an error response (5xx, 4xx)
+				console.log('SingleSignOnTokenInterceptor.responseError', error.response.status, error.response.data, error.response.headers);
+			} else if (error.request) {
+				// The client never received a response, and the request was never left
+				console.log('SingleSignOnTokenInterceptor.requestError', error.request);
+			} else {
+				// Anything else
+				console.log('SingleSignOnTokenInterceptor.error', error.message);
+			}
+			return next(error);
 		}
 		return res.redirect(`${redirectURL}`);
 	}
