@@ -1,28 +1,44 @@
-const fs = require('fs');
-const path = require('path');
+const { readFileSync } = require('../core/utils/utils');
 
-function readFileSync(keyPath) {
-	const keyUrl = path.resolve(__dirname, keyPath);
-	return fs.readFileSync(keyUrl);
-}
-
-// app secret to validate the request is coming from the authenticated server only.
-const SSO_SECRED = process.env.SSO_SECRET || 'l1Q7zkOL59cRqWBkQ12ZiGVW2DBL';
-const SSO_PUBLIC_KEY = process.env.SSO_PUBLIC_KEY || readFileSync('./sso.key');
+const SSO_PUBLIC_KEY = process.env.SSO_PUBLIC_KEY || readFileSync(__dirname, './sso.key');
 
 const origin = 'http://localhost:3010';
 // const origin = 'https://b-here-sso.herokuapp.com';
 
 const config = {
 	sso: {
-		secret: SSO_SECRED,
+		secret: 'l1Q7zkOL59cRqWBkQ12ZiGVW2DBL',
+		publicKey: SSO_PUBLIC_KEY,
 		issuer: 'bhere-sso',
 		origin: `${origin}`,
 		loginUrl: `${origin}/sso/login?redirectUrl={redirectUrl}`,
 		registerUrl: `${origin}/sso/register?redirectUrl={redirectUrl}`,
 		verifyTokenUrl: `${origin}/sso/verifytoken?verifyToken={verifytoken}`,
-		publicKey: SSO_PUBLIC_KEY,
 	}
 };
+
+if (process.env.SSO_SECRET) {
+	config.sso.secret = process.env.SSO_SECRET;
+}
+if (process.env.SSO_PUBLIC_KEY) {
+	config.sso.publicKey = process.env.SSO_PUBLIC_KEY;
+}
+if (process.env.SSO_ISSUER) {
+	config.sso.issuer = process.env.SSO_ISSUER;
+}
+if (process.env.SSO_ORIGIN) {
+	config.sso.origin = process.env.SSO_ORIGIN;
+}
+if (process.env.SSO_LOGIN_URL) {
+	config.sso.loginUrl = process.env.SSO_LOGIN_URL;
+}
+if (process.env.SSO_REGISTER_URL) {
+	config.sso.registerUrl = process.env.SSO_REGISTER_URL;
+}
+if (process.env.SSO_VERIFY_TOKEN_URL) {
+	config.sso.verifyTokenUrl = process.env.SSO_VERIFY_TOKEN_URL;
+}
+
+console.log(process.env.SSO_ISSUER);
 
 module.exports = config;
