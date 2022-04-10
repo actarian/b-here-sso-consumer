@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const app = express();
 const engine = require('ejs-mate');
 const session = require('express-session');
+const ssoRouter = require('./sso/sso.router');
 const fs = require('fs');
 const https = require('https');
 const favicon = require('serve-favicon');
@@ -11,6 +12,7 @@ const path = require('path');
 const SingleSignOnGuard = require('./sso/sso.guard');
 const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor');
 const config = require('./sso/sso.config');
+const SingleSignOnLogin = require('./sso/login/login.get');
 
 function serve(options) {
 
@@ -45,20 +47,16 @@ function serve(options) {
 	app.set('views', options.dirname + '/views');
 	app.set('view engine', 'ejs');
 	app.use(SingleSignOnTokenInterceptor);
+	app.use('/sso', ssoRouter);
 
 	app.get('/', (req, res, next) => {
-		const redirectUrl = `${req.protocol}://${req.headers.host}/token`;
-		const ssoUrl = config.sso.loginUrl.replace('{redirectUrl}', redirectUrl);
+		const redirectUrl = `${req.protocol}://${req.headers.host}/sso/token`;
+		const login = config.sso.loginUrl.replace('{redirectUrl}', redirectUrl);
+		const register = config.sso.registerUrl.replace('{redirectUrl}', redirectUrl);
 		res.render('index', {
 			title: 'BHere SSO Consumer | Index',
-			login: ssoUrl,
-		});
-	});
-
-	app.get('/token', SingleSignOnGuard, (req, res, next) => {
-		res.render('token', {
-			title: 'BHere SSO Consumer | Token',
-			status: req.session.decodedToken != null ? 'success' : 'failure',
+			login,
+			register,
 		});
 	});
 

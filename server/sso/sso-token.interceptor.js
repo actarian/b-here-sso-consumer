@@ -11,7 +11,6 @@ async function SingleSignOnTokenInterceptor(req, res, next) {
 		// to remove the verifyToken in query parameter redirect.
 		const requestUrl = new URL(req.url, `${req.protocol}://${req.headers.host}`);
 		const redirectURL = requestUrl.pathname;
-		console.log('redirectURL');
 		try {
 			const ssoVerifyUrl = config.sso.verifyTokenUrl.replace('{verifytoken}', verifyToken);
 			const response = await axios.get(ssoVerifyUrl, {
@@ -20,7 +19,9 @@ async function SingleSignOnTokenInterceptor(req, res, next) {
 				}
 			});
 			const { token } = response.data;
+			console.log('SingleSignOnTokenInterceptor.token', token);
 			const decodedToken = await decodeToken(token);
+			console.log('SingleSignOnTokenInterceptor.decodedToken', decodedToken);
 			// now that we have the decoded jwt,
 			// use the token sessionId as the global session id so that
 			// the logout can be implemented with the global session.
@@ -39,6 +40,7 @@ async function SingleSignOnTokenInterceptor(req, res, next) {
 			}
 			return next(error);
 		}
+		console.log('SingleSignOnTokenInterceptor.redirectURL', redirectURL);
 		return res.redirect(`${redirectURL}`);
 	}
 	return next();

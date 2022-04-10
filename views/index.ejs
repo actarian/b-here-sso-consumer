@@ -3,7 +3,8 @@
 	<h1>BHere SSO Consumer</h1>
 	<p>
 		<a href="/reserved-area">Reserved Area</a>
-		<button type="button" data-login="<%= login %>" data-title="SSO Login">SSO Login</button>
+		<button type="button" data-open="<%= login %>">SSO Login</button>
+		<button type="button" data-open="<%= register %>">SSO Register</button>
 	</p>
 </div>
 <script>
@@ -16,15 +17,15 @@ function onPopupClose(status) {
 	}
 }
 
-function doLogin(event) {
-	window.open(event.currentTarget.dataset.login, event.currentTarget.dataset.title, 'left=20,top=20,width=600,height=600,toolbar=1,resizable=0');
+function onOpen(event) {
+	window.open(event.currentTarget.dataset.open, 'SSO', 'left=20,top=20,width=600,height=600,toolbar=1,resizable=0');
 	event.preventDefault();
 	return false;
 }
 
-var login = document.querySelector('[data-login]');
-if (login) {
-	login.addEventListener('click', doLogin);
-}
+var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-open]'));
+buttons.forEach(button => {
+	button.addEventListener('click', onOpen);
+});
 
 </script>

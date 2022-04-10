@@ -8,9 +8,9 @@ function SingleSignOnGuard(req, res, next) {
 	// serviceUrl is where the sso should redirect in case of valid user
 	if (req.session.verifyToken == null) {
 		const redirectUrl = `${req.protocol}://${req.headers.host}${req.path}`;
-		const ssoUrl = config.sso.loginUrl.replace('{redirectUrl}', redirectUrl);
-		console.log('SingleSignOnGuard', ssoUrl, redirectUrl);
-		return res.redirect(ssoUrl);
+		const login = config.sso.loginUrl.replace('{redirectUrl}', redirectUrl);
+		console.log('SingleSignOnGuard', login, redirectUrl);
+		return res.redirect(login);
 	}
 	console.log('SingleSignOnGuard', req.session.verifyToken);
 	next();
