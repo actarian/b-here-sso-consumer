@@ -29,6 +29,8 @@ function serve(options) {
 	options.host = `http://localhost:${options.port}`;
 	options.hostHttps = `https://localhost:${options.portHttps}`;
 
+	const heroku = (process.env._ && process.env._.indexOf('heroku'));
+
 	app.use(
 		session({
 			secret: 'bhere-sso-consumer',
@@ -36,11 +38,12 @@ function serve(options) {
 			saveUninitialized: true
 		})
 	);
-
+	if (heroku) {
+		app.enable('trust proxy');
+	}
 	app.use(express.urlencoded({ extended: true }));
 	app.use(express.json());
 	app.use(favicon(path.join(options.dirname, 'public', 'favicon.ico')))
-
 	app.use(morgan('dev'));
 	app.engine('ejs', engine);
 	app.set('views', options.dirname + '/views');
@@ -93,7 +96,6 @@ function serve(options) {
 		console.info(`${options.name} running server at ${options.host}`);
 	});
 
-	const heroku = (process.env._ && process.env._.indexOf('heroku'));
 	if (!heroku) {
 		const privateKey = fs.readFileSync('cert.key', 'utf8');
 		const certificate = fs.readFileSync('cert.crt', 'utf8');
