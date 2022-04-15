@@ -12,7 +12,6 @@ const path = require('path');
 const SingleSignOnGuard = require('./sso/sso.guard');
 const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor');
 const config = require('./sso/sso.config');
-const SingleSignOnLogin = require('./sso/login/login.get');
 
 function serve(options) {
 
