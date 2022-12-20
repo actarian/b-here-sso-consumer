@@ -29,7 +29,8 @@ function serve(options) {
 	options.host = `http://localhost:${options.port}`;
 	options.hostHttps = `https://localhost:${options.portHttps}`;
 
-	const heroku = (process.env._ && process.env._.indexOf('heroku'));
+	const heroku = (process.env._ && process.env._.indexOf('heroku') !== -1);
+	const vercelUrl = process.env.VERCEL_URL;
 
 	app.use(
 		session({
@@ -38,7 +39,7 @@ function serve(options) {
 			saveUninitialized: true
 		})
 	);
-	if (heroku) {
+	if (heroku || vercelUrl) {
 		app.enable('trust proxy');
 	}
 	app.use(express.urlencoded({ extended: true }));
@@ -96,7 +97,7 @@ function serve(options) {
 		console.info(`${options.name} running server at ${options.host}`);
 	});
 
-	if (!heroku) {
+	if (!heroku && !vercelUrl) {
 		const privateKey = fs.readFileSync('cert.key', 'utf8');
 		const certificate = fs.readFileSync('cert.crt', 'utf8');
 		const credentials = { key: privateKey, cert: certificate };

@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "public": true,
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "data/**/*.json",
+          "public/**",
+          "server/sso/sso.key",
+          "views/**/*.ejs"
+        ]
+      }
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static",
+      "config": {
+        "includeFiles": [
+          "public/**"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ]
+}
