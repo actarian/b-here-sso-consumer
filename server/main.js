@@ -52,6 +52,10 @@ function serve(options) {
 	app.use(SingleSignOnTokenInterceptor);
 	app.use('/sso', ssoRouter);
 
+	app.get('/api/env', function (request, response) {
+		response.json(process.env);
+	});
+
 	app.get('/', (req, res, next) => {
 		const redirectUrl = `${req.protocol}://${req.headers.host}/sso/token`;
 		const login = config.sso.loginUrl.replace('{redirectUrl}', redirectUrl);
